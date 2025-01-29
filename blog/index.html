@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <title>BlogSpot</title>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+        } 
+        .overlay {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 24px;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body >
+    <header class="flex items-center justify-between text-4xl bg-pink-200 h-24 rounded-lg shadow-lg font-bold">
+        <h1 class="p-12">BlogSpot</h1>
+        <button class="mr-12 cursor-pointer hover:opacity-50" id="showFormButton">+</button>
+    </header>
+    <main>
+        <div id="formOverlay" class="overlay hidden">
+            <form id="blogForm" class="flex flex-col items-center border-2 border-black bg-white p-8 rounded-lg">
+                <div>
+                    <label for="username">Title: </label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div>
+                    <label for="content">Content: </label>
+                    <textarea id="content" name="content" required></textarea> 
+                </div>
+                <button type="submit" class="bg-black text-white hover cursor-pointer">Submit</button>
+            </form>
+        </div>
+        <div id="responses" class="">
+        </div>
+    </main>
+    <footer>
+    </footer>
+    <script>
+        const showFormButton = document.getElementById('showFormButton');
+        const formOverlay = document.getElementById('formOverlay');
+        const blogForm = document.getElementById('blogForm');
+        const responsesDiv = document.getElementById('responses');
+
+        showFormButton.addEventListener('click', () => {
+            formOverlay.classList.toggle('hidden');
+        });
+
+        blogForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            console.log(event);
+            const username = document.getElementById('username').value;
+            const content = document.getElementById('content').value;
+
+            let responses = JSON.parse(localStorage.getItem('responses')) || [];
+            responses.push({ username, content });
+            localStorage.setItem('responses', JSON.stringify(responses));
+            displayResponses();
+            blogForm.reset();
+            formOverlay.classList.add('hidden');
+        });
+
+        function displayResponses() {
+            responsesDiv.innerHTML = '';
+            let responses = JSON.parse(localStorage.getItem('responses')) || [];
+            responses.forEach((response, index) => {
+                const responseElement = document.createElement('div');
+                responseElement.classList.add('flex','justify-between', 'border', 'border-gray-300','text-2xl', 'rounded', 'p-6', 'my-5', 'w-full', 'mx-auto');
+                responseElement.innerHTML = `
+                    <h3 class="font-bold">${response.username}</h3>
+                    <div>
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer shadow-lg hover:opacity-50" onclick="viewResponse(${index})">View</button>
+                        <button class="bg-green-500 text-white px-4 py-2 rounded mx-2 cursor-pointer shadow-lg hover:opacity-50" onclick="editResponse(${index})">Edit</button>
+                        <button class="bg-red-500 text-white px-4 py-2 rounded cursor-pointer shadow-lg hover:opacity-50" onclick="deleteResponse(${index})">Delete</button>
+                    </div>    
+                    `;
+                responsesDiv.appendChild(responseElement);
+            });
+        }
+
+        function viewResponse(index) {
+            const responses = JSON.parse(localStorage.getItem('responses')) || [];
+            const response = responses[index];
+            alert(`Title: ${response.username}\nContent: ${response.content}`);
+        }
+
+        function deleteResponse(index) {
+            let responses = JSON.parse(localStorage.getItem('responses')) || [];
+            responses.splice(index, 1);
+            localStorage.setItem('responses', JSON.stringify(responses));
+            displayResponses();
+        }
+        function editResponse(index){
+            let responses = JSON.parse(localStorage.getItem('responses')) || [];
+            const response = responses[index];
+            
+        }
+
+        window.onload = displayResponses;
+    </script>
+</body>
+
+</html>
