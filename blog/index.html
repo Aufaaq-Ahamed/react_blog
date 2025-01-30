@@ -6,38 +6,28 @@
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <title>BlogSpot</title>
     <style>
-        body{
-            margin: 0;
-            padding: 0;
-        } 
-        .overlay {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 24px;
-        }
         .hidden {
             display: none;
         }
     </style>
 </head>
-<body >
+<body class="m-0 p-0">
     <header class="flex items-center justify-between text-4xl bg-pink-200 h-24 rounded-lg shadow-lg font-bold">
-        <h1 class="p-12">BlogSpot</h1>
+        <h1 class="py-12 pr-12 pl-6">BlogSpot</h1>
         <button class="mr-12 cursor-pointer hover:opacity-50" id="showFormButton">+</button>
     </header>
     <main>
-        <div id="formOverlay" class="overlay hidden">
-            <form id="blogForm" class="flex flex-col items-center border-2 border-black bg-white p-8 rounded-lg">
+        <div id="formOverlay" class="overlay hidden flex justify-center items-center mt-8">
+            <form id="blogForm" class="flex flex-col items-center border-2 border-black bg-white p-8 rounded-lg w-3/5 h-full">
                 <div>
-                    <label for="username">Title: </label>
+                    <label for="username" class="font-bold text-xl">Title: </label>
                     <input type="text" id="username" name="username" required>
                 </div>
-                <div>
-                    <label for="content">Content: </label>
+                <div class="flex items-center">
+                    <label for="content" class="font-bold text-xl">Content: </label>
                     <textarea id="content" name="content" required></textarea> 
                 </div>
-                <button type="submit" class="bg-black text-white hover cursor-pointer">Submit</button>
+                <button type="submit" class="bg-black text-white hover cursor-pointer px-6 py-2 rounded-lg hover:opacity-50">Submit</button>
             </form>
         </div>
         <div id="responses" class="">
@@ -46,10 +36,15 @@
     <footer>
     </footer>
     <script>
+    <!-- Javascriprt -->
+    var v=0;
         const showFormButton = document.getElementById('showFormButton');
         const formOverlay = document.getElementById('formOverlay');
         const blogForm = document.getElementById('blogForm');
         const responsesDiv = document.getElementById('responses');
+        const userNameField = document.getElementById('username');
+        const contentField = document.getElementById('content');
+        // const viewField = document.getElementbyId
 
         showFormButton.addEventListener('click', () => {
             formOverlay.classList.toggle('hidden');
@@ -57,12 +52,15 @@
 
         blogForm.addEventListener('submit', (event) => {
             event.preventDefault();
-            console.log(event);
+            // console.log(event);
             const username = document.getElementById('username').value;
             const content = document.getElementById('content').value;
-
+            // console.log(localStorage.getItem('responses'));
+            // console.log(typeof[])
             let responses = JSON.parse(localStorage.getItem('responses')) || [];
-            responses.push({ username, content });
+            let views = v;
+            // v=0;
+            responses.push({ username, content, views });
             localStorage.setItem('responses', JSON.stringify(responses));
             displayResponses();
             blogForm.reset();
@@ -72,13 +70,17 @@
         function displayResponses() {
             responsesDiv.innerHTML = '';
             let responses = JSON.parse(localStorage.getItem('responses')) || [];
-            responses.forEach((response, index) => {
+            responses.forEach((response, index, arr ) => {
+                // console.log(response);
+                // console.log(index);
+                console.log(arr);
+                // if response
                 const responseElement = document.createElement('div');
                 responseElement.classList.add('flex','justify-between', 'border', 'border-gray-300','text-2xl', 'rounded', 'p-6', 'my-5', 'w-full', 'mx-auto');
                 responseElement.innerHTML = `
                     <h3 class="font-bold">${response.username}</h3>
                     <div>
-                        <button class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer shadow-lg hover:opacity-50" onclick="viewResponse(${index})">View</button>
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer shadow-lg hover:opacity-50" onclick="viewResponse(${index})">👁️${response.views} View</button>
                         <button class="bg-green-500 text-white px-4 py-2 rounded mx-2 cursor-pointer shadow-lg hover:opacity-50" onclick="editResponse(${index})">Edit</button>
                         <button class="bg-red-500 text-white px-4 py-2 rounded cursor-pointer shadow-lg hover:opacity-50" onclick="deleteResponse(${index})">Delete</button>
                     </div>    
@@ -87,10 +89,17 @@
             });
         }
 
-        function viewResponse(index) {
+        
+        function viewResponse(index, fn) {
             const responses = JSON.parse(localStorage.getItem('responses')) || [];
             const response = responses[index];
             alert(`Title: ${response.username}\nContent: ${response.content}`);
+            
+            response.views = response.views+1;
+            console.log(response);
+            responses.splice(index, 1, response);
+            localStorage.setItem('responses', JSON.stringify(responses));
+            displayResponses();
         }
 
         function deleteResponse(index) {
@@ -102,8 +111,17 @@
         function editResponse(index){
             let responses = JSON.parse(localStorage.getItem('responses')) || [];
             const response = responses[index];
-            
+            console.log(response);
+            contentField.value = response.content
+            userNameField.value = response.username
+
+                v = response.views;
+
+            formOverlay.classList.toggle('hidden');
+            responses.splice(index, 1);
+            localStorage.setItem('responses', JSON.stringify(responses));
         }
+        
 
         window.onload = displayResponses;
     </script>
