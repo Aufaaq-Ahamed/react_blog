@@ -59,7 +59,7 @@
             // console.log(typeof[])
             let responses = JSON.parse(localStorage.getItem('responses')) || [];
             let views = v;
-            // v=0;
+            v=0;
             responses.push({ username, content, views });
             localStorage.setItem('responses', JSON.stringify(responses));
             displayResponses();
