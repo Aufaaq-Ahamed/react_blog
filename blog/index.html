@@ -77,8 +77,9 @@
                 // if response
                 const responseElement = document.createElement('div');
                 responseElement.classList.add('flex','justify-between', 'border', 'border-gray-300','text-2xl', 'rounded', 'p-6', 'my-5', 'w-full', 'mx-auto');
+                // let short=response.username.length()>20 ? response.username
                 responseElement.innerHTML = `
-                    <h3 class="font-bold">${response.username}</h3>
+                    <h3 class="font-bold truncate">${response.username.slice(0, 20)}...</h3>
                     <div>
                         <button class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer shadow-lg hover:opacity-50" onclick="viewResponse(${index})">👁️${response.views} View</button>
                         <button class="bg-green-500 text-white px-4 py-2 rounded mx-2 cursor-pointer shadow-lg hover:opacity-50" onclick="editResponse(${index})">Edit</button>
