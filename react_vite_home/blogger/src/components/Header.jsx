@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom"
+
 export function Header(){
     return (
-        <div className="flex flex-wrap items-center bg-black text-white justify-between p-8 rounded shadow-lg text-5xl font-bold">
+        <div className="flex flex-wrap font-mono items-center bg-black text-white justify-between p-8 rounded shadow-lg text-5xl font-bold">
             <h1>𝕭𝖑𝖔𝖌𝖌𝖌</h1>
             <div className="flex text-2xl gap-6 cursor-pointer">
                 {/* <h3>Home</h3>

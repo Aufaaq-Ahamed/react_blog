@@ -6,6 +6,8 @@ import { Home } from './components/Home';
 import { Blog } from './components/Blog';
 import { Create } from './components/Create';
 import { About } from './components/About';
+import { Content } from "./components/Content";
+import { Footer } from "./components/Footer";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
@@ -17,10 +19,6 @@ function App() {
     }
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("blogs", JSON.stringify(blogs));
-  }, [blogs]);
-
   return (
     <div className='h-screen'>
       <BrowserRouter> 
@@ -29,8 +27,10 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/create' element={<Create setBlogs={setBlogs} />} />
           <Route path='/about' element={<About />} />
-          <Route path='/blog' element={<Blog blogs={blogs} />} />
+          <Route path='/blog' element={<Blog blogs={blogs} setBlogs={setBlogs}/>} />
+          <Route path='/content/:id' element={<Content blogs={blogs}/>} />
         </Routes>
+        <Footer />
       </BrowserRouter>
     </div>
   );
